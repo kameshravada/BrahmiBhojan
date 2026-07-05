@@ -7,9 +7,12 @@ Documentation-first project setup and architecture planning.
 ## Completed
 
 - Created `docs/01-vision-and-business-strategy.md` as the first formal architecture document.
+- Proceeded from Document 01 to Document 02 after user approval.
+- Created `docs/02-product-requirements-document.md` as the second formal architecture document.
 - Confirmed planned stack and modular monolith architecture direction.
 - Confirmed backend-first initialization strategy after documentation approval.
 - Added repository-level project context tracking.
+- Created GitHub repository remote and pushed `main`.
 
 ## Current Decisions
 
@@ -24,8 +27,6 @@ Documentation-first project setup and architecture planning.
 
 ## Pending
 
-- Approve Document 01: Vision & Business Strategy.
-- Create Document 02: Product Requirements Document.
+- Approve Document 02: Product Requirements Document.
+- Create Document 03: Software Requirements Specification after approval.
 - Initialize backend skeleton after the required design gate.
-- Create GitHub repository and add it as remote.
-
