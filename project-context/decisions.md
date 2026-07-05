@@ -49,3 +49,9 @@ Reason: Grocery and food categories have different safety, perishability, and qu
 Decision: Select affordable SMS, WhatsApp, and email providers while keeping provider integrations replaceable.
 
 Reason: Notification costs can grow with OTP, transactional, and marketing volume, so the platform should avoid hard dependency on a costly provider.
+
+## D009 - No Social Login
+
+Decision: BrahmiBhojan will not support social login.
+
+Reason: The product identity model is mobile-number-first with OTP. Social login does not guarantee verified delivery mobile number and would add unnecessary authentication complexity.

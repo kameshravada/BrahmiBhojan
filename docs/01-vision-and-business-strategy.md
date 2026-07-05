@@ -157,7 +157,7 @@ Recommended approach: mobile OTP authentication without passwords.
 | --- | --- | --- | --- |
 | Password login | Familiar for web apps; easy to implement. | Higher friction, forgotten passwords, weaker fit for quick-commerce behavior. | Not recommended. |
 | OTP-only login | Low friction, mobile-first, familiar for Indian ecommerce. | Requires OTP provider reliability and abuse prevention. | Recommended. |
-| Social login | Convenient for some users. | Does not guarantee verified mobile number; provider dependency. | Optional future enhancement. |
+| Social login | Convenient for some users. | Does not guarantee verified mobile number; provider dependency; not aligned with current product direction. | Not recommended and excluded by product decision. |
 
 Why this is chosen:
 
@@ -404,4 +404,3 @@ After stakeholder review, one of the following decisions is required:
 | Approved | Proceed to Document 02 - Product Requirements Document. |
 | Approved with changes | Apply requested changes, then proceed after confirmation. |
 | Rework required | Revise this document and resubmit for approval. |
-
