@@ -6,7 +6,7 @@
 | --- | --- |
 | Project | BrahmiBhojan |
 | Document | 02 - Product Requirements Document |
-| Status | Draft for approval |
+| Status | Approved |
 | Owner | Product & Architecture |
 | Audience | Founders, product, engineering, QA, design, operations, marketing, support |
 | Last Updated | 2026-07-05 |
@@ -555,18 +555,20 @@ The PRD is approved when:
 8. Initial release boundaries are understood.
 9. The document does not conflict with Document 01.
 
-## 14. Open Questions
+## 14. Product Decisions Confirmed During Approval
 
-These questions do not block approval of the PRD, but they should be resolved before detailed design:
+The following decisions were confirmed during PRD approval and must guide later SRS, architecture, database, API, checkout, order, payment, notification, and admin designs.
 
-1. What is the initial delivery geography by pincode/locality?
-2. Will BrahmiBhojan handle delivery directly or through third-party logistics at launch?
-3. Are cash-on-delivery or UPI-only flows required, or only Razorpay online payment initially?
-4. Are returns allowed for all categories, or only selected categories?
-5. What tax/GST rules apply to the initial product catalog?
-6. Which SMS, WhatsApp, and email providers will be used?
-7. Should admin portal and customer storefront share the same frontend app or be separated by route/application boundary?
-8. What are the initial roles for the first admin users?
+| Question | Decision |
+| --- | --- |
+| Initial delivery geography | Customers must provide complete delivery address with pincode/locality, similar to quick-commerce platforms. Delivery eligibility and reporting must be pincode/locality-aware. |
+| Launch delivery model | BrahmiBhojan will collect order details, pack products internally, hand shipments to delivery partners such as Delhivery or similar providers, and update order status over time. |
+| Payment modes at launch | Cash on delivery is not supported initially. Online payment and UPI are required. Razorpay remains the planned payment gateway. |
+| Returns policy | Returns are allowed only for selected products/categories. Admin must be able to configure return eligibility at product and/or category level. |
+| Tax/GST | GST will be applied at cart level. Detailed GST calculation rules must be designed in checkout, order, and database documents. |
+| SMS, WhatsApp, and email providers | Provider choice should prioritize low cost while keeping the notification architecture provider-replaceable. |
+| Admin and storefront frontend boundary | Follow common industry practice: keep customer storefront and admin portal separated by application/route boundary with different access control, navigation, and UX patterns. Final structure will be decided in frontend architecture. |
+| Initial admin roles | Initial release starts with admins only. Fine-grained roles and permissions will still be designed for enterprise readiness and future operational growth. |
 
 ## 15. Approval Gate
 
@@ -577,4 +579,3 @@ After stakeholder review, one of the following decisions is required:
 | Approved | Proceed to Document 03 - Software Requirements Specification. |
 | Approved with changes | Apply requested changes, then proceed after confirmation. |
 | Rework required | Revise this document and resubmit for approval. |
-
