@@ -32,3 +32,24 @@ BrahmiBhojan/
 
 Some folders will be created when their approved phase begins.
 
+## Current Bootstrap Status
+
+- `backend/` scaffold created with Spring Boot 3 (Java 21, Maven)
+- Initial auth module added (`register`, `login`) with JWT
+- PostgreSQL migration baseline added with Flyway (`users` table)
+- Local infra compose added for PostgreSQL and Redis (`docker-compose.yml` and `infra/docker-compose.yml`)
+
+## Local Run (Backend)
+
+```powershell
+cd D:\kamesh-codes\BrahmiBhojan
+docker compose up -d
+cd backend
+mvn spring-boot:run
+```
+
+Open:
+
+- `http://localhost:8080/actuator/health`
+- `http://localhost:8080/swagger-ui/index.html`
+
