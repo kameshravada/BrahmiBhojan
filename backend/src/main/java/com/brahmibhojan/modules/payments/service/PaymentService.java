@@ -28,7 +28,9 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -47,6 +49,9 @@ public class PaymentService {
 
     @Value("${payment.webhook.signature-secret:test-signature-secret}")
     private String webhookSignatureSecret;
+
+    @Value("${payment.reconciliation.stale-created-seconds:1800}")
+    private long staleCreatedSeconds;
 
     @Transactional
     public CreatePaymentOrderResponse createPaymentOrder(String mobile, CreatePaymentOrderRequest request) {
@@ -122,6 +127,31 @@ public class PaymentService {
         paymentWebhookEventRepository.save(event);
 
         return new PaymentWebhookResponse(request.eventId(), request.providerOrderId(), "PROCESSED");
+    }
+
+    @Transactional
+    public int reconcileStaleCreatedTransactions() {
+        Instant cutoff = Instant.now().minusSeconds(staleCreatedSeconds);
+        List<PaymentTransaction> staleTransactions = paymentTransactionRepository
+                .findAllByStatusAndCreatedAtBefore(PaymentTransactionStatus.CREATED, cutoff);
+
+        int reconciledCount = 0;
+        for (PaymentTransaction transaction : staleTransactions) {
+            Order order = transaction.getOrder();
+            if (order.getPaymentStatus() != PaymentStatus.PENDING || order.getStatus() != OrderStatus.CREATED) {
+                continue;
+            }
+
+            transaction.setStatus(PaymentTransactionStatus.FAILED);
+            order.setPaymentStatus(PaymentStatus.FAILED);
+            order.setStatus(OrderStatus.CANCELLED);
+            paymentTransactionRepository.save(transaction);
+            orderRepository.save(order);
+            inventoryService.releaseReservationsForOrder(order.getId());
+            reconciledCount++;
+        }
+
+        return reconciledCount;
     }
 
     private CreatePaymentOrderResponse toCreatePaymentOrderResponse(Order order, PaymentTransaction transaction) {

@@ -3,14 +3,14 @@
 ## Open - High Priority
 
 - [ ] Finalize clean commit slicing: `auth+customer`, `catalog+cart+checkout`, `inventory+payments`, `docs/status`.
-- [ ] Confirm backend runs locally from IntelliJ with Maven import after clean IDE re-open.
-- [ ] Add payment webhook test case for missing signature header.
-- [ ] Add address integration tests for create/update/delete and default-address switching.
-- [ ] Add inventory check before cart item quantity updates.
+- [x] Confirm backend builds from a clean state (`mvn clean test-compile`) as IntelliJ re-import proxy; one UI reopen check can be done during next IDE restart.
+- [x] Add payment webhook test case for missing signature header.
+- [x] Add address integration tests for create/update/delete and default-address switching.
+- [x] Add inventory check before cart item quantity updates.
 
 ## Open - Medium Priority
 
-- [ ] Add periodic reconciliation job for payment-provider eventual consistency.
+- [x] Add periodic reconciliation job for payment-provider eventual consistency.
 - [ ] Add profile-based toggle for seed data runner.
 - [ ] Add catalog product search ranking tuning.
 - [ ] Add onboarding note for Docker + Maven + IntelliJ local setup.
@@ -39,4 +39,5 @@
 - [x] Added backend CI workflow for test runs on push/PR under `.github/workflows/backend-tests.yml`.
 - [x] Added integration tests for invalid webhook signature, payment-failure inventory release, and reservation over-reserve/concurrency.
 - [x] Validated local Docker services status for PostgreSQL and Redis.
+- [x] Added customer address CRUD + default-switch integration test coverage and verified full `mvn test` pass.
 

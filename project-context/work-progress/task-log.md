@@ -19,6 +19,17 @@ Use one entry per completed task.
 
 ## Initial Entries
 
+### [CUSTOMER-002] Address CRUD integration hardening + default switch coverage
+- Date: 2026-07-13
+- Module: customer, qa, project-context
+- Status: Done
+- What was implemented: Expanded customer integration coverage to validate address create/update/delete flows and default-address switching behavior for authenticated users.
+- Files changed: `backend/src/test/java/com/brahmibhojan/modules/customer/CustomerControllerIntegrationTest.java`, `project-context/work-progress/todo-backlog.md`, `project-context/work-progress/development-status.md`
+- Design/approach: Reused OTP login bootstrap in-test, created helper methods for address setup, and asserted exactly one default address remains after switching.
+- Tests run: `mvn test` (PASS: 16 tests), `mvn clean test-compile -DskipTests=true` (PASS; clean import/build sanity proxy).
+- Notes: GitHub PR creation requires repository auth from this environment; CI status can be checked once branch push triggers workflow.
+- Follow-up TODOs: Open PR from `feature/cart-inventory-guard` to `main`, then begin `catalog search ranking tuning` branch.
+
 ### [PAYMENT-INV-001] Inventory + payment reconciliation hardening and CI test workflow
 - Date: 2026-07-13
 - Module: inventory, payments, checkout, devops

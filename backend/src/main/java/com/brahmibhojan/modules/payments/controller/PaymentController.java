@@ -29,7 +29,7 @@ public class PaymentController {
 
     @PostMapping("/api/v1/payments/webhook")
     public PaymentWebhookResponse reconcileWebhook(
-            @RequestHeader("X-Payment-Signature") String signature,
+            @RequestHeader(value = "X-Payment-Signature", required = false) String signature,
             @Valid @RequestBody PaymentWebhookRequest request
     ) {
         return paymentService.reconcileWebhook(request, signature);
