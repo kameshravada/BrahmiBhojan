@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -100,6 +101,42 @@ class CartControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(Map.of("guestToken", guestToken))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.itemCount").value(1));
+    }
+
+    @Test
+    void cartItemQuantityUpdateShouldFailWhenRequestedQtyExceedsInventory() throws Exception {
+        UUID variantId = productVariantRepository.findAll().stream()
+                .findFirst()
+                .orElseThrow()
+                .getId();
+
+        String guestToken = "guest-token-inventory-check";
+
+        MvcResult addResult = mockMvc.perform(post("/api/v1/cart/items")
+                        .header("X-Guest-Token", guestToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "variantId", variantId,
+                                "quantity", 1
+                        ))))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Map<String, Object> addResponse = objectMapper.readValue(
+                addResult.getResponse().getContentAsString(),
+                new TypeReference<>() {
+                }
+        );
+
+        Map<String, Object> item = ((java.util.List<Map<String, Object>>) addResponse.get("items")).getFirst();
+        String itemId = item.get("itemId").toString();
+
+        mockMvc.perform(patch("/api/v1/cart/items/{itemId}", itemId)
+                        .header("X-Guest-Token", guestToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("quantity", 101))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("Only 100 units available")));
     }
 }
 

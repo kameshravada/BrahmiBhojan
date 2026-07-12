@@ -8,6 +8,8 @@ import com.brahmibhojan.modules.orders.model.Order;
 import com.brahmibhojan.modules.orders.model.OrderStatus;
 import com.brahmibhojan.modules.orders.model.PaymentStatus;
 import com.brahmibhojan.modules.orders.repository.OrderRepository;
+import com.brahmibhojan.modules.payments.repository.PaymentTransactionRepository;
+import com.brahmibhojan.modules.payments.service.PaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.HexFormat;
 import java.util.Map;
 import java.util.UUID;
@@ -52,6 +55,12 @@ class PaymentWorkflowIntegrationTest {
 
     @Autowired
     private InventoryStockRepository inventoryStockRepository;
+
+    @Autowired
+    private PaymentTransactionRepository paymentTransactionRepository;
+
+    @Autowired
+    private PaymentService paymentService;
 
     private UUID variantId;
 
@@ -178,6 +187,26 @@ class PaymentWorkflowIntegrationTest {
     }
 
     @Test
+    void paymentWebhookShouldRejectMissingSignatureHeader() throws Exception {
+        String accessToken = loginAndGetAccessToken("+919222111030");
+        String orderId = createCheckoutOrder(accessToken, "+919222111030", "payment-workflow-missing-signature");
+        Map<String, Object> paymentOrderResponse = createPaymentOrder(accessToken, orderId);
+        String providerOrderId = paymentOrderResponse.get("providerOrderId").toString();
+
+        mockMvc.perform(post("/api/v1/payments/webhook")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "eventId", "evt-missing-signature-1",
+                                "providerOrderId", providerOrderId,
+                                "providerPaymentId", "pay_missing_sig",
+                                "status", "paid",
+                                "amount", paymentOrderResponse.get("amount"),
+                                "currency", "INR"
+                        ))))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void paymentWebhookFailedShouldCancelOrderAndReleaseReservation() throws Exception {
         String accessToken = loginAndGetAccessToken("+919222111020");
         String orderId = createCheckoutOrder(accessToken, "+919222111020", "payment-workflow-failed-status");
@@ -210,6 +239,33 @@ class PaymentWorkflowIntegrationTest {
         var stockAfterWebhook = inventoryStockRepository.findByVariantId(variantId).orElseThrow();
         assertThat(stockAfterWebhook.getAvailableQuantity()).isEqualTo(stockBeforeWebhook.getAvailableQuantity());
         assertThat(stockAfterWebhook.getReservedQuantity()).isEqualTo(stockBeforeWebhook.getReservedQuantity() - ORDER_QUANTITY);
+    }
+
+    @Test
+    void staleCreatedPaymentShouldBeReconciledAsFailedAndReleaseInventory() throws Exception {
+        String accessToken = loginAndGetAccessToken("+919222111040");
+        String orderId = createCheckoutOrder(accessToken, "+919222111040", "payment-workflow-stale-reconcile");
+        String providerOrderId = createPaymentOrder(accessToken, orderId).get("providerOrderId").toString();
+
+        var transaction = paymentTransactionRepository.findByProviderOrderId(providerOrderId).orElseThrow();
+        transaction.setCreatedAt(Instant.now().minusSeconds(120));
+        paymentTransactionRepository.save(transaction);
+
+        var stockBeforeReconcile = inventoryStockRepository.findByVariantId(variantId).orElseThrow();
+        int reconciledCount = paymentService.reconcileStaleCreatedTransactions();
+        assertThat(reconciledCount).isGreaterThanOrEqualTo(1);
+
+        Order savedOrder = orderRepository.findById(UUID.fromString(orderId)).orElseThrow();
+        assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.CANCELLED);
+        assertThat(savedOrder.getPaymentStatus()).isEqualTo(PaymentStatus.FAILED);
+
+        var updatedTransaction = paymentTransactionRepository.findByProviderOrderId(providerOrderId).orElseThrow();
+        assertThat(updatedTransaction.getStatus().name()).isEqualTo("FAILED");
+
+        var stockAfterReconcile = inventoryStockRepository.findByVariantId(variantId).orElseThrow();
+        assertThat(stockAfterReconcile.getAvailableQuantity()).isEqualTo(stockBeforeReconcile.getAvailableQuantity());
+        assertThat(stockAfterReconcile.getReservedQuantity())
+                .isLessThanOrEqualTo(stockBeforeReconcile.getReservedQuantity() - ORDER_QUANTITY);
     }
 
     private String createCheckoutOrder(String accessToken, String mobile, String idempotencyKey) throws Exception {
