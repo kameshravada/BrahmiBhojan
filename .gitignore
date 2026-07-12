@@ -40,3 +40,6 @@ docker-data/
 tmp/
 temp/
 
+# Local tooling
+tools/
+
