@@ -4,13 +4,13 @@
 
 - [ ] Finalize clean commit slicing: `auth+customer`, `catalog+cart+checkout`, `inventory+payments`, `docs/status`.
 - [ ] Confirm backend runs locally from IntelliJ with Maven import after clean IDE re-open.
-- [ ] Add payment webhook test case for missing signature header.
+- [x] Add payment webhook test case for missing signature header.
 - [ ] Add address integration tests for create/update/delete and default-address switching.
-- [ ] Add inventory check before cart item quantity updates.
+- [x] Add inventory check before cart item quantity updates.
 
 ## Open - Medium Priority
 
-- [ ] Add periodic reconciliation job for payment-provider eventual consistency.
+- [x] Add periodic reconciliation job for payment-provider eventual consistency.
 - [ ] Add profile-based toggle for seed data runner.
 - [ ] Add catalog product search ranking tuning.
 - [ ] Add onboarding note for Docker + Maven + IntelliJ local setup.

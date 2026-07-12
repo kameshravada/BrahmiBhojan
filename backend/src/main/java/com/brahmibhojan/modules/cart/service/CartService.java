@@ -11,10 +11,13 @@ import com.brahmibhojan.modules.cart.repository.CartItemRepository;
 import com.brahmibhojan.modules.cart.repository.CartRepository;
 import com.brahmibhojan.modules.catalog.model.ProductVariant;
 import com.brahmibhojan.modules.catalog.repository.ProductVariantRepository;
+import com.brahmibhojan.modules.inventory.model.InventoryStock;
+import com.brahmibhojan.modules.inventory.repository.InventoryStockRepository;
 import com.brahmibhojan.modules.users.model.User;
 import com.brahmibhojan.modules.users.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,8 +35,12 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductVariantRepository productVariantRepository;
+    private final InventoryStockRepository inventoryStockRepository;
     private final UserRepository userRepository;
     private final SecureRandom secureRandom = new SecureRandom();
+
+    @Value("${inventory.default-available-quantity:100}")
+    private int defaultAvailableQuantity;
 
     @Transactional
     public CartResponse addItem(String mobile, String guestToken, AddCartItemRequest request) {
@@ -51,6 +58,7 @@ public class CartService {
                 });
 
         int updatedQty = item.getId() == null ? request.quantity() : item.getQuantity() + request.quantity();
+        validateQuantityAgainstInventory(variant, updatedQty);
         item.setQuantity(updatedQty);
         item.setUnitPrice(variant.getPrice());
         item.setLineTotal(variant.getPrice().multiply(BigDecimal.valueOf(updatedQty)));
@@ -85,6 +93,7 @@ public class CartService {
                     });
 
             int qty = (targetItem.getId() == null ? 0 : targetItem.getQuantity()) + guestItem.getQuantity();
+            validateQuantityAgainstInventory(guestItem.getProductVariant(), qty);
             targetItem.setQuantity(qty);
             targetItem.setUnitPrice(guestItem.getUnitPrice());
             targetItem.setLineTotal(guestItem.getUnitPrice().multiply(BigDecimal.valueOf(qty)));
@@ -104,6 +113,7 @@ public class CartService {
         CartItem item = cartItemRepository.findByIdAndCartId(itemId, cart.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found"));
 
+        validateQuantityAgainstInventory(item.getProductVariant(), request.quantity());
         item.setQuantity(request.quantity());
         item.setLineTotal(item.getUnitPrice().multiply(BigDecimal.valueOf(request.quantity())));
         cartItemRepository.save(item);
@@ -188,6 +198,24 @@ public class CartService {
                 total,
                 items
         );
+    }
+
+    private void validateQuantityAgainstInventory(ProductVariant variant, int requestedQuantity) {
+        if (requestedQuantity < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity must be at least 1");
+        }
+
+        InventoryStock stock = inventoryStockRepository.findByVariantId(variant.getId()).orElse(null);
+        int sellableQuantity = stock == null
+                ? defaultAvailableQuantity
+                : Math.max(stock.getAvailableQuantity() - stock.getReservedQuantity(), 0);
+
+        if (requestedQuantity > sellableQuantity) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Only " + sellableQuantity + " units available for variant " + variant.getId()
+            );
+        }
     }
 }
 
