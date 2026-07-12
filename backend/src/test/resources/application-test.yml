@@ -14,5 +14,29 @@ spring:
 security:
   jwt:
     secret-base64: QnJhaG1pQmhvamFuVGVzdFNlY3JldEtleTEyMzQ1Njc4OTAxMjM0NTY=
-    expiration-seconds: 3600
+    access-expiration-seconds: 900
+
+auth:
+  otp:
+    return-otp-in-response: true
+    rate-limit:
+      window-seconds: 3600
+      mobile:
+        max-requests: 50
+      ip:
+        max-requests: 200
+      device:
+        max-requests: 200
+      verify-device:
+        max-attempts: 200
+  refresh-token:
+    expiry-seconds: 2592000
+    hash-pepper: test-refresh-pepper
+
+inventory:
+  default-available-quantity: 100
+
+payment:
+  webhook:
+    signature-secret: test-signature-secret
 

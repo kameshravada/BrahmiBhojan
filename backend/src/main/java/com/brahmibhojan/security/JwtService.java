@@ -19,26 +19,26 @@ import java.util.function.Function;
 public class JwtService {
 
     private final String secretBase64;
-    private final long expirationSeconds;
+    private final long accessExpirationSeconds;
 
     public JwtService(
             @Value("${security.jwt.secret-base64}") String secretBase64,
-            @Value("${security.jwt.expiration-seconds}") long expirationSeconds
+            @Value("${security.jwt.access-expiration-seconds:${security.jwt.expiration-seconds:3600}}") long accessExpirationSeconds
     ) {
         this.secretBase64 = secretBase64;
-        this.expirationSeconds = expirationSeconds;
+        this.accessExpirationSeconds = accessExpirationSeconds;
     }
 
-    public String generateToken(String email, String role) {
+    public String generateToken(String subject, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
         Instant now = Instant.now();
 
         return Jwts.builder()
                 .claims(claims)
-                .subject(email)
+                .subject(subject)
                 .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusSeconds(expirationSeconds)))
+                .expiration(Date.from(now.plusSeconds(accessExpirationSeconds)))
                 .signWith(signingKey())
                 .compact();
     }
@@ -53,7 +53,7 @@ public class JwtService {
     }
 
     public long getExpirationSeconds() {
-        return expirationSeconds;
+        return accessExpirationSeconds;
     }
 
     private boolean isTokenExpired(String token) {
