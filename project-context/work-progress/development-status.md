@@ -5,15 +5,15 @@ Last updated: 2026-07-13
 ## Current Phase
 
 - Phase: Backend hardening
-- Overall progress: 81%
-- Focus this week: catalog search relevance tuning and local setup sanity checks
+- Overall progress: 83%
+- Focus this week: catalog hardening (ranking + profile-safe seed control)
 
 ## Module Progress
 
 | Module | Status | Progress |
 |---|---|---|
 | Auth | In Progress | 82% |
-| Catalog | In Progress | 76% |
+| Catalog | In Progress | 80% |
 | Cart | In Progress | 60% |
 | Checkout | In Progress | 72% |
 | Orders | In Progress | 65% |

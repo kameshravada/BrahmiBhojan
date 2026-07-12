@@ -19,6 +19,17 @@ Use one entry per completed task.
 
 ## Initial Entries
 
+### [CATALOG-003] Profile-based catalog seed data toggle
+- Date: 2026-07-13
+- Module: catalog, config
+- Status: Done
+- What was implemented: Added config-driven guard for catalog seed runner using `catalog.seed.enabled`; set development/test enabled and production disabled.
+- Files changed: `backend/src/main/java/com/brahmibhojan/modules/catalog/service/CatalogSeedDataInitializer.java`, `backend/src/main/resources/application.properties`, `backend/src/main/resources/application-dev.properties`, `backend/src/main/resources/application-prod.properties`, `backend/src/test/resources/application-test.yml`
+- Design/approach: Use `@ConditionalOnProperty` to keep seeding behavior explicit per profile while preserving backward compatibility with default enabled behavior.
+- Tests run: `mvn -B test` (PASS).
+- Notes: Production profile now avoids accidental sample data injection unless explicitly enabled via environment override.
+- Follow-up TODOs: Add onboarding note documenting how to override `CATALOG_SEED_ENABLED` during local setup.
+
 ### [CATALOG-002] Catalog search ranking tuning
 - Date: 2026-07-13
 - Module: catalog
