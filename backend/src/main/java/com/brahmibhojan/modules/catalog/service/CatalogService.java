@@ -21,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -45,16 +46,19 @@ public class CatalogService {
             String unit,
             BigDecimal minPrice,
             BigDecimal maxPrice,
+            String sort,
             int page,
             int size
     ) {
         Pageable pageable = PageRequest.of(Math.max(page, 0), Math.clamp(size, 1, 100));
+        String resolvedSort = resolveSort(sort);
         Page<Product> products = productRepository.searchProducts(
                 normalizeFilter(categorySlug),
                 normalizeFilter(query),
                 normalizeFilter(unit),
                 minPrice,
                 maxPrice,
+                resolvedSort,
                 pageable
         );
 
@@ -135,6 +139,37 @@ public class CatalogService {
             return null;
         }
         return value.trim();
+    }
+
+    private String resolveSort(String sort) {
+        return CatalogProductSort.fromRequest(sort).value;
+    }
+
+    private enum CatalogProductSort {
+        RELEVANCE("relevance"),
+        PRICE_ASC("price_asc"),
+        PRICE_DESC("price_desc"),
+        NEWEST("newest");
+
+        private final String value;
+
+        CatalogProductSort(String value) {
+            this.value = value;
+        }
+
+        private static CatalogProductSort fromRequest(String raw) {
+            if (raw == null || raw.isBlank()) {
+                return RELEVANCE;
+            }
+
+            String normalized = raw.trim().toLowerCase(Locale.ROOT);
+            for (CatalogProductSort option : values()) {
+                if (option.value.equals(normalized)) {
+                    return option;
+                }
+            }
+            return RELEVANCE;
+        }
     }
 }
 

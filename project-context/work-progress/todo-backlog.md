@@ -12,7 +12,7 @@
 
 - [ ] Add periodic reconciliation job for payment-provider eventual consistency.
 - [ ] Add profile-based toggle for seed data runner.
-- [ ] Add catalog product search ranking tuning.
+- [x] Add catalog product search ranking tuning.
 - [ ] Add onboarding note for Docker + Maven + IntelliJ local setup.
 
 ## Open - Low Priority
@@ -39,4 +39,5 @@
 - [x] Added backend CI workflow for test runs on push/PR under `.github/workflows/backend-tests.yml`.
 - [x] Added integration tests for invalid webhook signature, payment-failure inventory release, and reservation over-reserve/concurrency.
 - [x] Validated local Docker services status for PostgreSQL and Redis.
+- [x] Added catalog search ranking options (`relevance`, `price_asc`, `price_desc`, `newest`) with integration coverage.
 

@@ -19,6 +19,17 @@ Use one entry per completed task.
 
 ## Initial Entries
 
+### [CATALOG-002] Catalog search ranking tuning
+- Date: 2026-07-13
+- Module: catalog
+- Status: Done
+- What was implemented: Added sort-aware catalog listing with `relevance`, `price_asc`, `price_desc`, and `newest`; tuned relevance ordering for exact/prefix/contains matching on product name and slug.
+- Files changed: `backend/src/main/java/com/brahmibhojan/modules/catalog/controller/CatalogController.java`, `backend/src/main/java/com/brahmibhojan/modules/catalog/service/CatalogService.java`, `backend/src/main/java/com/brahmibhojan/modules/catalog/repository/ProductRepository.java`, `backend/src/test/java/com/brahmibhojan/modules/catalog/CatalogControllerIntegrationTest.java`
+- Design/approach: Keep ranking implementation inside repository query ordering while validating incoming sort values in service to enforce stable fallback behavior.
+- Tests run: `mvn -B test` (PASS: 18 tests).
+- Notes: Price sorts use minimum available variant price per product; unknown sort values fallback to `relevance`.
+- Follow-up TODOs: Add popularity/rating-backed sort modes once product engagement metrics and rating module are available.
+
 ### [PAYMENT-INV-001] Inventory + payment reconciliation hardening and CI test workflow
 - Date: 2026-07-13
 - Module: inventory, payments, checkout, devops

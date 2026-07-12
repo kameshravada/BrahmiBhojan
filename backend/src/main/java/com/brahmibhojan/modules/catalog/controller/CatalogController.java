@@ -32,10 +32,11 @@ public class CatalogController {
             @RequestParam(required = false) String unit,
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(defaultValue = "relevance") String sort,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return catalogService.getProducts(category, query, unit, minPrice, maxPrice, page, size);
+        return catalogService.getProducts(category, query, unit, minPrice, maxPrice, sort, page, size);
     }
 
     @GetMapping("/api/v1/catalog/products/{slug}")
