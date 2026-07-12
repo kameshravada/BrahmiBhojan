@@ -4,12 +4,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.brahmibhojan.modules.catalog.repository.ProductVariantRepository;
 import com.brahmibhojan.modules.inventory.repository.InventoryStockRepository;
+import com.brahmibhojan.modules.notifications.model.NotificationType;
+import com.brahmibhojan.modules.notifications.repository.NotificationEventRepository;
 import com.brahmibhojan.modules.orders.model.Order;
 import com.brahmibhojan.modules.orders.model.OrderStatus;
 import com.brahmibhojan.modules.orders.model.PaymentStatus;
 import com.brahmibhojan.modules.orders.repository.OrderRepository;
 import com.brahmibhojan.modules.payments.repository.PaymentTransactionRepository;
 import com.brahmibhojan.modules.payments.service.PaymentService;
+import com.brahmibhojan.modules.users.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +64,12 @@ class PaymentWorkflowIntegrationTest {
 
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private NotificationEventRepository notificationEventRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private UUID variantId;
 
@@ -152,6 +161,14 @@ class PaymentWorkflowIntegrationTest {
         assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.CONFIRMED);
         assertThat(savedOrder.getPaymentStatus()).isEqualTo(PaymentStatus.PAID);
 
+        UUID userId = userRepository.findByMobile("+919222111000").orElseThrow().getId();
+        var successNotifications = notificationEventRepository.findAllByUserIdAndTypeOrderByCreatedAtDesc(
+                userId,
+                NotificationType.ORDER_PAYMENT_SUCCESS
+        );
+        assertThat(successNotifications).isNotEmpty();
+        assertThat(successNotifications.stream().anyMatch(event -> event.getMessage().contains(savedOrder.getOrderNumber()))).isTrue();
+
         var stockAfterWebhook = inventoryStockRepository.findByVariantId(variantId).orElseThrow();
         assertThat(stockAfterWebhook.getAvailableQuantity()).isEqualTo(stockBeforeWebhook.getAvailableQuantity() - ORDER_QUANTITY);
         assertThat(stockAfterWebhook.getReservedQuantity()).isEqualTo(stockBeforeWebhook.getReservedQuantity() - ORDER_QUANTITY);
@@ -235,6 +252,14 @@ class PaymentWorkflowIntegrationTest {
         Order savedOrder = orderRepository.findById(UUID.fromString(orderId)).orElseThrow();
         assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.CANCELLED);
         assertThat(savedOrder.getPaymentStatus()).isEqualTo(PaymentStatus.FAILED);
+
+        UUID userId = userRepository.findByMobile("+919222111020").orElseThrow().getId();
+        var failedNotifications = notificationEventRepository.findAllByUserIdAndTypeOrderByCreatedAtDesc(
+                userId,
+                NotificationType.ORDER_PAYMENT_FAILED
+        );
+        assertThat(failedNotifications).isNotEmpty();
+        assertThat(failedNotifications.stream().anyMatch(event -> event.getMessage().contains(savedOrder.getOrderNumber()))).isTrue();
 
         var stockAfterWebhook = inventoryStockRepository.findByVariantId(variantId).orElseThrow();
         assertThat(stockAfterWebhook.getAvailableQuantity()).isEqualTo(stockBeforeWebhook.getAvailableQuantity());

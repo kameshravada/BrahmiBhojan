@@ -5,8 +5,8 @@ Last updated: 2026-07-13
 ## Current Phase
 
 - Phase: Backend hardening
-- Overall progress: 86%
-- Focus this week: developer onboarding stability and environment sanity checks
+- Overall progress: 90%
+- Focus this week: notifications foundation and transactional communication reliability
 
 ## Module Progress
 
@@ -17,9 +17,9 @@ Last updated: 2026-07-13
 | Cart | In Progress | 60% |
 | Checkout | In Progress | 72% |
 | Orders | In Progress | 65% |
-| Payments | In Progress | 70% |
+| Payments | In Progress | 76% |
 | Inventory | In Progress | 67% |
-| Notifications | Not Started | 0% |
+| Notifications | In Progress | 62% |
 | Admin | Not Started | 0% |
 | Customer | In Progress | 72% |
 | Infrastructure/DevOps | In Progress | 60% |
@@ -32,6 +32,6 @@ Last updated: 2026-07-13
 ## Next Milestones
 
 1. Split backend changes into clean commits by module group and raise PR.
-2. Add webhook + inventory edge-case regression tests and keep suite green.
+2. Extend notifications to delivery status transitions (`packed`, `shipped`, `delivered`) and marketing workflows.
 3. Complete one manual IntelliJ clean-machine verification and close environment blocker.
 

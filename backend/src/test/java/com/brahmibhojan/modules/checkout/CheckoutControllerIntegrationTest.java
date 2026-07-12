@@ -3,6 +3,9 @@ package com.brahmibhojan.modules.checkout;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.brahmibhojan.modules.catalog.repository.ProductVariantRepository;
+import com.brahmibhojan.modules.notifications.model.NotificationType;
+import com.brahmibhojan.modules.notifications.repository.NotificationEventRepository;
+import com.brahmibhojan.modules.users.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,6 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,6 +37,12 @@ class CheckoutControllerIntegrationTest {
 
     @Autowired
     private ProductVariantRepository productVariantRepository;
+
+    @Autowired
+    private NotificationEventRepository notificationEventRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void checkoutValidateAndOrderCreateShouldSucceed() throws Exception {
@@ -84,7 +94,7 @@ class CheckoutControllerIntegrationTest {
                 .andExpect(jsonPath("$.itemCount").value(1))
                 .andExpect(jsonPath("$.payableAmount").isNotEmpty());
 
-        mockMvc.perform(post("/api/v1/checkout/orders")
+        MvcResult orderCreateResult = mockMvc.perform(post("/api/v1/checkout/orders")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of(
@@ -96,7 +106,23 @@ class CheckoutControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").isNotEmpty())
                 .andExpect(jsonPath("$.orderStatus").value("CREATED"))
-                .andExpect(jsonPath("$.paymentStatus").value("PENDING"));
+                .andExpect(jsonPath("$.paymentStatus").value("PENDING"))
+                .andReturn();
+
+        Map<String, Object> orderResponse = objectMapper.readValue(
+                orderCreateResult.getResponse().getContentAsString(),
+                new TypeReference<>() {
+                }
+        );
+        String orderNumber = orderResponse.get("orderNumber").toString();
+
+        UUID userId = userRepository.findByMobile(mobile).orElseThrow().getId();
+        var notifications = notificationEventRepository.findAllByUserIdAndTypeOrderByCreatedAtDesc(
+                userId,
+                NotificationType.ORDER_CONFIRMATION
+        );
+        assertThat(notifications).isNotEmpty();
+        assertThat(notifications.stream().anyMatch(event -> event.getMessage().contains(orderNumber))).isTrue();
     }
 
     private String loginAndGetAccessToken(String mobile) throws Exception {

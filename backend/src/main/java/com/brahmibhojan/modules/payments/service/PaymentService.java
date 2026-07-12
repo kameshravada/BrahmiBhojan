@@ -1,6 +1,7 @@
 package com.brahmibhojan.modules.payments.service;
 
 import com.brahmibhojan.modules.inventory.service.InventoryService;
+import com.brahmibhojan.modules.notifications.service.NotificationService;
 import com.brahmibhojan.modules.orders.model.Order;
 import com.brahmibhojan.modules.orders.model.OrderStatus;
 import com.brahmibhojan.modules.orders.model.PaymentStatus;
@@ -18,6 +19,7 @@ import com.brahmibhojan.modules.payments.repository.PaymentWebhookEventRepositor
 import com.brahmibhojan.modules.users.model.User;
 import com.brahmibhojan.modules.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,10 +34,10 @@ import java.time.Instant;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentService {
 
     private static final String CURRENCY_INR = "INR";
@@ -45,6 +47,7 @@ public class PaymentService {
     private final PaymentTransactionRepository paymentTransactionRepository;
     private final PaymentWebhookEventRepository paymentWebhookEventRepository;
     private final InventoryService inventoryService;
+    private final NotificationService notificationService;
     private final SecureRandom secureRandom = new SecureRandom();
 
     @Value("${payment.webhook.signature-secret:test-signature-secret}")
@@ -106,12 +109,14 @@ public class PaymentService {
             order.setPaymentStatus(PaymentStatus.PAID);
             order.setStatus(OrderStatus.CONFIRMED);
             inventoryService.consumeReservationsForOrder(order.getId());
+            sendPaymentSuccessNotification(order);
         } else if ("failed".equals(normalizedStatus)) {
             transaction.setStatus(PaymentTransactionStatus.FAILED);
             transaction.setProviderPaymentId(request.providerPaymentId());
             order.setPaymentStatus(PaymentStatus.FAILED);
             order.setStatus(OrderStatus.CANCELLED);
             inventoryService.releaseReservationsForOrder(order.getId());
+            sendPaymentFailureNotification(order);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported payment webhook status");
         }
@@ -189,6 +194,22 @@ public class PaymentService {
             return HexFormat.of().formatHex(mac.doFinal(payload.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Webhook signature verification failed");
+        }
+    }
+
+    private void sendPaymentSuccessNotification(Order order) {
+        try {
+            notificationService.sendOrderPaymentSuccess(order);
+        } catch (Exception ex) {
+            log.warn("Payment success notification failed orderId={}", order.getId(), ex);
+        }
+    }
+
+    private void sendPaymentFailureNotification(Order order) {
+        try {
+            notificationService.sendOrderPaymentFailed(order);
+        } catch (Exception ex) {
+            log.warn("Payment failure notification failed orderId={}", order.getId(), ex);
         }
     }
 }
