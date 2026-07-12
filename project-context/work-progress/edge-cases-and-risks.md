@@ -97,3 +97,20 @@
   - Mitigation: request/response logger masks OTP, access token, refresh token and authorization fields.
   - Track status: Mitigated
 
+## Development Environment
+
+- Case: IntelliJ Maven import fails or keeps stale dependency state.
+  - Impact: false compile/runtime errors and slow onboarding.
+  - Mitigation: documented Java 21 SDK alignment, Maven reimport steps, and cache reset flow in `docs/00-dev-environment-setup.md`.
+  - Track status: Mitigated (documented)
+
+- Case: Docker services are up but backend cannot connect due to local engine/network issues.
+  - Impact: app startup failures and flaky test/debug runs.
+  - Mitigation: added dev sanity script `scripts/dev-sanity-check.ps1` and compose health check steps in onboarding docs.
+  - Track status: Mitigated (basic)
+
+- Case: Profile/config mismatch between IDE and CLI (`catalog.seed.enabled`, profile selection).
+  - Impact: inconsistent local behavior and hard-to-reproduce bugs.
+  - Mitigation: documented profile defaults and override approach in `docs/00-dev-environment-setup.md`.
+  - Track status: Mitigated (documented)
+
