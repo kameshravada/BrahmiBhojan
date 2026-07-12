@@ -19,6 +19,17 @@ Use one entry per completed task.
 
 ## Initial Entries
 
+### [DEVX-001] Developer onboarding guide and sanity script
+- Date: 2026-07-13
+- Module: devops, documentation
+- Status: Done
+- What was implemented: Added a full developer setup guide for Docker + Maven + IntelliJ and a PowerShell sanity script for local environment validation.
+- Files changed: `docs/00-dev-environment-setup.md`, `scripts/dev-sanity-check.ps1`, `README.md`, `backend/README.md`, `project-context/work-progress/edge-cases-and-risks.md`
+- Design/approach: Keep one canonical setup guide, add a script for fast readiness checks, and link all major READMEs to reduce onboarding drift.
+- Tests run: `scripts/dev-sanity-check.ps1` (PASS: Java/Docker/Maven checks).
+- Notes: Manual IntelliJ clean-machine import verification is still tracked as a final closure step.
+- Follow-up TODOs: Run one clean IDE reopen/import pass and mark the blocker resolved.
+
 ### [CATALOG-003] Profile-based catalog seed data toggle
 - Date: 2026-07-13
 - Module: catalog, config

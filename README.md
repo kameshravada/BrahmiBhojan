@@ -39,13 +39,18 @@ Some folders will be created when their approved phase begins.
 - PostgreSQL migration baseline added with Flyway (`users` table)
 - Local infra compose added for PostgreSQL and Redis (`docker-compose.yml` and `infra/docker-compose.yml`)
 
+## Developer Onboarding
+
+- Full local setup and IntelliJ sanity guide: `docs/00-dev-environment-setup.md`
+- Backend-focused quick start: `backend/README.md`
+
 ## Local Run (Backend)
 
 ```powershell
 cd D:\kamesh-codes\BrahmiBhojan
 docker compose up -d
 cd backend
-mvn spring-boot:run
+..\tools\apache-maven-3.9.9\bin\mvn.cmd spring-boot:run
 ```
 
 Open:

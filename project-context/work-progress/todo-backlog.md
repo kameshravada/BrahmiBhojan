@@ -13,7 +13,7 @@
 - [ ] Add periodic reconciliation job for payment-provider eventual consistency.
 - [x] Add profile-based toggle for seed data runner.
 - [x] Add catalog product search ranking tuning.
-- [ ] Add onboarding note for Docker + Maven + IntelliJ local setup.
+- [x] Add onboarding note for Docker + Maven + IntelliJ local setup.
 
 ## Open - Low Priority
 
@@ -41,4 +41,5 @@
 - [x] Validated local Docker services status for PostgreSQL and Redis.
 - [x] Added catalog search ranking options (`relevance`, `price_asc`, `price_desc`, `newest`) with integration coverage.
 - [x] Added profile-based catalog seed toggle (`catalog.seed.enabled`) with prod disabled by default.
+- [x] Added developer onboarding guide and sanity script for Docker + Maven + IntelliJ setup.
 

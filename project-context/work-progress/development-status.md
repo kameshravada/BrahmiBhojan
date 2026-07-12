@@ -5,8 +5,8 @@ Last updated: 2026-07-13
 ## Current Phase
 
 - Phase: Backend hardening
-- Overall progress: 83%
-- Focus this week: catalog hardening (ranking + profile-safe seed control)
+- Overall progress: 86%
+- Focus this week: developer onboarding stability and environment sanity checks
 
 ## Module Progress
 
@@ -22,16 +22,16 @@ Last updated: 2026-07-13
 | Notifications | Not Started | 0% |
 | Admin | Not Started | 0% |
 | Customer | In Progress | 72% |
-| Infrastructure/DevOps | In Progress | 52% |
+| Infrastructure/DevOps | In Progress | 60% |
 | Documentation/Planning | In Progress | 92% |
 
 ## Blockers
 
-- IntelliJ Maven import consistency still needs one clean-machine verification pass.
+- IntelliJ Maven import consistency now documented; one clean-machine re-open verification is still pending.
 
 ## Next Milestones
 
 1. Split backend changes into clean commits by module group and raise PR.
 2. Add webhook + inventory edge-case regression tests and keep suite green.
-3. Add Docker and IntelliJ sanity checks to the onboarding checklist.
+3. Complete one manual IntelliJ clean-machine verification and close environment blocker.
 
