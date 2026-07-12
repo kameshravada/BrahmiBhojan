@@ -19,6 +19,17 @@ Use one entry per completed task.
 
 ## Initial Entries
 
+### [NOTIF-001] Notification service foundation with transactional triggers
+- Date: 2026-07-13
+- Module: notifications, checkout, payments
+- Status: Done
+- What was implemented: Added full notifications foundation with channel/provider abstraction (SMS, WhatsApp, Email), template rendering and seed data, persistent event log, user marketing preference API, retry scheduler, and transactional triggers on order creation/payment outcomes.
+- Files changed: `backend/src/main/java/com/brahmibhojan/modules/notifications/**`, `backend/src/main/java/com/brahmibhojan/modules/checkout/service/CheckoutService.java`, `backend/src/main/java/com/brahmibhojan/modules/payments/service/PaymentService.java`, `backend/src/main/resources/application*.properties`, `backend/src/main/resources/db/migration/V2__create_notifications_tables.sql`, `backend/src/test/java/com/brahmibhojan/modules/notifications/NotificationControllerIntegrationTest.java`, `backend/src/test/java/com/brahmibhojan/modules/checkout/CheckoutControllerIntegrationTest.java`, `backend/src/test/java/com/brahmibhojan/modules/payments/PaymentWorkflowIntegrationTest.java`, `docs/20-notifications.md`
+- Design/approach: Keep gateway interfaces provider-agnostic, persist all outbound events for observability and retries, and attach notification calls to existing transactional domain flows with non-blocking failure handling.
+- Tests run: `mvn -B test` (PASS: 19 tests, 0 failures, 0 errors).
+- Notes: Default provider adapters currently log payloads for local validation; production provider wiring can replace these adapters without service-layer changes.
+- Follow-up TODOs: Add delivery status notifications (`packed`, `shipped`, `delivered`) and campaign/abandonment flows.
+
 ### [DEVX-001] Developer onboarding guide and sanity script
 - Date: 2026-07-13
 - Module: devops, documentation

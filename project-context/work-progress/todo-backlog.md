@@ -18,7 +18,7 @@
 ## Open - Low Priority
 
 - [ ] Add dashboard-ready analytics aggregates.
-- [ ] Add advanced notification provider abstraction.
+- [x] Add advanced notification provider abstraction.
 
 ## Done
 
@@ -42,4 +42,5 @@
 - [x] Added catalog search ranking options (`relevance`, `price_asc`, `price_desc`, `newest`) with integration coverage.
 - [x] Added profile-based catalog seed toggle (`catalog.seed.enabled`) with prod disabled by default.
 - [x] Added developer onboarding guide and sanity script for Docker + Maven + IntelliJ setup.
+- [x] Added notification service foundation (channels, templates, event log, retries, user preference API).
 

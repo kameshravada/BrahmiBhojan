@@ -50,3 +50,10 @@ payment:
   reconciliation:
     stale-created-seconds: 1
 
+notification:
+  retry:
+    max-attempts: 3
+    initial-delay-seconds: 1
+  template:
+    seed-enabled: true
+

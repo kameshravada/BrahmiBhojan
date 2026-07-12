@@ -15,6 +15,7 @@ import com.brahmibhojan.modules.customer.model.CustomerAddress;
 import com.brahmibhojan.modules.customer.repository.CustomerAddressRepository;
 import com.brahmibhojan.modules.inventory.dto.InventoryReserveItem;
 import com.brahmibhojan.modules.inventory.service.InventoryService;
+import com.brahmibhojan.modules.notifications.service.NotificationService;
 import com.brahmibhojan.modules.orders.model.Order;
 import com.brahmibhojan.modules.orders.model.OrderItem;
 import com.brahmibhojan.modules.orders.model.OrderStatus;
@@ -25,6 +26,7 @@ import com.brahmibhojan.modules.users.model.User;
 import com.brahmibhojan.modules.users.model.UserStatus;
 import com.brahmibhojan.modules.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CheckoutService {
 
     private static final DateTimeFormatter ORDER_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneOffset.UTC);
@@ -54,6 +57,7 @@ public class CheckoutService {
     private final InventoryService inventoryService;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final NotificationService notificationService;
     private final SecureRandom secureRandom = new SecureRandom();
 
     @Transactional(readOnly = true)
@@ -105,6 +109,12 @@ public class CheckoutService {
 
         context.cart().setStatus(CartStatus.CHECKED_OUT);
         cartRepository.save(context.cart());
+
+        try {
+            notificationService.sendOrderConfirmation(savedOrder);
+        } catch (Exception ex) {
+            log.warn("Order confirmation notification failed orderId={}", savedOrder.getId(), ex);
+        }
 
         return toCreateOrderResponse(savedOrder);
     }
