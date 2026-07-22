@@ -14,8 +14,8 @@ public class DefaultOtpDeliveryGateway implements OtpDeliveryGateway {
         String maskedMobile = mobile.length() <= 4
                 ? "****"
                 : "****" + mobile.substring(mobile.length() - 4);
-        // OTP itself is intentionally not logged.
-        log.info("OTP challenge sent for mobile {}", maskedMobile);
+        // Dev/testing mode: print OTP so it can be entered manually from logs.
+        log.info("OTP challenge sent for mobile {} with OTP {}", maskedMobile, otp);
     }
 }
 

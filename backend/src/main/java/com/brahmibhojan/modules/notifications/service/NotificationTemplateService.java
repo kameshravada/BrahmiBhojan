@@ -44,6 +44,22 @@ public class NotificationTemplateService {
                 template.setSubject("Payment failed for {{orderNumber}}");
                 template.setBody("Hi {{name}}, payment failed for order {{orderNumber}}. Please retry.");
             }
+            case ORDER_PACKED -> {
+                template.setSubject("Order {{orderNumber}} packed");
+                template.setBody("Hi {{name}}, your order {{orderNumber}} is packed and ready for dispatch.");
+            }
+            case ORDER_SHIPPED -> {
+                template.setSubject("Order {{orderNumber}} shipped");
+                template.setBody("Hi {{name}}, your order {{orderNumber}} has been shipped.");
+            }
+            case ORDER_OUT_FOR_DELIVERY -> {
+                template.setSubject("Order {{orderNumber}} out for delivery");
+                template.setBody("Hi {{name}}, your order {{orderNumber}} is out for delivery.");
+            }
+            case ORDER_DELIVERED -> {
+                template.setSubject("Order {{orderNumber}} delivered");
+                template.setBody("Hi {{name}}, your order {{orderNumber}} has been delivered. Enjoy your meal!");
+            }
             default -> {
                 template.setSubject(type.name().replace('_', ' '));
                 template.setBody("Notification for " + type.name().replace('_', ' ') + ".");

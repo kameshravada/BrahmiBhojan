@@ -50,6 +50,10 @@ payment:
   reconciliation:
     stale-created-seconds: 1
 
+delivery:
+  webhook:
+    signature-secret: test-delivery-signature-secret
+
 notification:
   retry:
     max-attempts: 3

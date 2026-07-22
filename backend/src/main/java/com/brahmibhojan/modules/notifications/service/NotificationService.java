@@ -63,6 +63,34 @@ public class NotificationService {
     }
 
     @Transactional
+    public void sendOrderPacked(Order order) {
+        Map<String, String> context = baseOrderContext(order);
+        queueNotification(order.getUser().getId(), order.getPhoneNumber(), order.getUser().getEmail(),
+                NotificationType.ORDER_PACKED, false, context);
+    }
+
+    @Transactional
+    public void sendOrderShipped(Order order) {
+        Map<String, String> context = baseOrderContext(order);
+        queueNotification(order.getUser().getId(), order.getPhoneNumber(), order.getUser().getEmail(),
+                NotificationType.ORDER_SHIPPED, false, context);
+    }
+
+    @Transactional
+    public void sendOrderOutForDelivery(Order order) {
+        Map<String, String> context = baseOrderContext(order);
+        queueNotification(order.getUser().getId(), order.getPhoneNumber(), order.getUser().getEmail(),
+                NotificationType.ORDER_OUT_FOR_DELIVERY, false, context);
+    }
+
+    @Transactional
+    public void sendOrderDelivered(Order order) {
+        Map<String, String> context = baseOrderContext(order);
+        queueNotification(order.getUser().getId(), order.getPhoneNumber(), order.getUser().getEmail(),
+                NotificationType.ORDER_DELIVERED, false, context);
+    }
+
+    @Transactional
     public void queueNotification(
             UUID userId,
             String mobile,

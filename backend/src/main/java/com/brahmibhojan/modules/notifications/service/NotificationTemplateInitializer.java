@@ -33,6 +33,18 @@ public class NotificationTemplateInitializer implements CommandLineRunner {
         seed(NotificationType.ORDER_PAYMENT_FAILED, NotificationChannel.SMS,
                 null,
                 "Hi {{name}}, payment failed for order {{orderNumber}}. Please retry.");
+        seed(NotificationType.ORDER_PACKED, NotificationChannel.SMS,
+                null,
+                "Hi {{name}}, your order {{orderNumber}} is packed and ready for dispatch.");
+        seed(NotificationType.ORDER_SHIPPED, NotificationChannel.SMS,
+                null,
+                "Hi {{name}}, your order {{orderNumber}} has been shipped.");
+        seed(NotificationType.ORDER_OUT_FOR_DELIVERY, NotificationChannel.SMS,
+                null,
+                "Hi {{name}}, your order {{orderNumber}} is out for delivery.");
+        seed(NotificationType.ORDER_DELIVERED, NotificationChannel.SMS,
+                null,
+                "Hi {{name}}, your order {{orderNumber}} has been delivered. Enjoy your meal!");
 
         seed(NotificationType.ORDER_CONFIRMATION, NotificationChannel.EMAIL,
                 "Order {{orderNumber}} created",
@@ -43,6 +55,18 @@ public class NotificationTemplateInitializer implements CommandLineRunner {
         seed(NotificationType.ORDER_PAYMENT_FAILED, NotificationChannel.EMAIL,
                 "Payment failed for {{orderNumber}}",
                 "Hi {{name}}, payment failed for order {{orderNumber}}. Please retry.");
+        seed(NotificationType.ORDER_PACKED, NotificationChannel.EMAIL,
+                "Order {{orderNumber}} packed",
+                "Hi {{name}}, your order {{orderNumber}} is packed and ready for dispatch.");
+        seed(NotificationType.ORDER_SHIPPED, NotificationChannel.EMAIL,
+                "Order {{orderNumber}} shipped",
+                "Hi {{name}}, your order {{orderNumber}} has been shipped.");
+        seed(NotificationType.ORDER_OUT_FOR_DELIVERY, NotificationChannel.EMAIL,
+                "Order {{orderNumber}} out for delivery",
+                "Hi {{name}}, your order {{orderNumber}} is out for delivery.");
+        seed(NotificationType.ORDER_DELIVERED, NotificationChannel.EMAIL,
+                "Order {{orderNumber}} delivered",
+                "Hi {{name}}, your order {{orderNumber}} has been delivered. Enjoy your meal!");
 
         seed(NotificationType.ORDER_CONFIRMATION, NotificationChannel.WHATSAPP,
                 null,
@@ -53,6 +77,18 @@ public class NotificationTemplateInitializer implements CommandLineRunner {
         seed(NotificationType.ORDER_PAYMENT_FAILED, NotificationChannel.WHATSAPP,
                 null,
                 "Payment failed for order {{orderNumber}}. Please retry.");
+        seed(NotificationType.ORDER_PACKED, NotificationChannel.WHATSAPP,
+                null,
+                "Your order {{orderNumber}} is packed and ready for dispatch.");
+        seed(NotificationType.ORDER_SHIPPED, NotificationChannel.WHATSAPP,
+                null,
+                "Your order {{orderNumber}} has been shipped.");
+        seed(NotificationType.ORDER_OUT_FOR_DELIVERY, NotificationChannel.WHATSAPP,
+                null,
+                "Your order {{orderNumber}} is out for delivery.");
+        seed(NotificationType.ORDER_DELIVERED, NotificationChannel.WHATSAPP,
+                null,
+                "Your order {{orderNumber}} has been delivered. Enjoy your meal!");
 
         log.info("Notification templates seeded");
     }
