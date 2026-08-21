@@ -12,3 +12,14 @@
 - Keep global client state minimal.
 - Avoid duplicating derived state across modules.
 
+## Chosen Libraries
+
+- Server state: TanStack Query
+- Client/session/UI state: Zustand
+- Forms and validation: React Hook Form + Zod
+
+## Ownership Guideline
+
+- Use TanStack Query for products, categories, cart, addresses, orders, payment status.
+- Use Zustand for drawer/modal state, filter panel state, auth UI flow flags.
+- Use React Hook Form + Zod for OTP forms, address forms, checkout inputs.

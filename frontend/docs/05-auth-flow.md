@@ -16,7 +16,14 @@
 5. UI refreshes token silently as needed.
 6. Logout revokes refresh token and clears local session.
 
+## Implemented Screen
+
+- Route: `/login`
+- Step 1: Mobile input (`+91`), calls `POST /api/v1/auth/otp/request`
+- Step 2: OTP input (6 digits), calls `POST /api/v1/auth/otp/verify`
+- Stores returned access and refresh tokens in local storage for current frontend baseline.
+- Uses persisted `deviceId` for request/verify calls.
+
 ## Dev Note
 
 OTP is currently console-logged in backend for manual test entry.
-

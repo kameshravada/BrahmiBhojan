@@ -2,7 +2,13 @@
 
 ## Goal
 
-Prepare a standalone frontend workspace under `frontend/` for VS Code-based UI development.
+Prepare and run a standalone frontend workspace under `frontend/` for VS Code-based UI development.
+
+## Current Implementation Status
+
+- Next.js App Router project initialized.
+- TypeScript, Tailwind CSS v4, and ESLint configured.
+- Base scripts added for `dev`, `build`, `start`, `lint`, and `typecheck`.
 
 ## Minimum Setup Checklist
 
@@ -11,11 +17,18 @@ Prepare a standalone frontend workspace under `frontend/` for VS Code-based UI d
 - Open only `frontend/` in VS Code for daily UI work.
 - Keep backend running separately for API calls.
 
+## Run Commands
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
 ## Environment Variables (planned)
 
-- `VITE_API_BASE_URL` (example: `http://localhost:8080`)
+- `NEXT_PUBLIC_API_BASE_URL` (example: `http://localhost:8080`)
 
 ## Notes
 
-This document is intentionally framework-agnostic for now and will be updated once UI scaffold is added.
-
+This document now reflects the created frontend scaffold and will evolve as feature modules are implemented.

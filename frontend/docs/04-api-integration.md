@@ -17,3 +17,9 @@ Backend APIs are served from `backend/` service (default local: `http://localhos
 - Add auth token injection via interceptor/middleware.
 - Normalize error responses for consistent UI handling.
 
+## Implementation Direction
+
+- API client: Axios instance in `src/lib/api/client.ts`.
+- Base URL: `NEXT_PUBLIC_API_BASE_URL`.
+- Error normalization: map backend error envelope to UI-safe message shape.
+- Auth integration: request interceptor for access token and refresh retry policy.
