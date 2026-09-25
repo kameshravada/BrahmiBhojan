@@ -67,37 +67,32 @@ export default function Home() {
       <HomeTopNav />
 
       <main className="mx-auto w-full max-w-7xl px-5 md:mt-6">
-        <section className="relative mb-16 h-[300px] w-full overflow-hidden rounded-[24px] shadow-[0_4px_20px_rgba(24,77,54,0.04)] md:h-[480px]">
-          <img
-            className="absolute inset-0 h-full w-full object-cover"
-            alt="Village farm and family food preparation"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKzC2iCeTzh067oqtySH3QOxt3iOFmZCy5rf2oG-T0CVbkLK8fAiSkKn_FKyyvC_NR0Mq2YTVT5TwpQF-ybqkkJi4fxPSCOI_c0lMhsBuDUBpF0A0KevkFTW7JT_Uod4--lup3taYl1f9bD7flGixm24Pc6KBbcQrd9wX24TJKT2efCUl2kTfnbjQ-7yIWjR8t3IPOGcU0eKfRqSJCbQc_-eCONvLBvbNPiBeqnAatSD2-CBYwt5EFaLS6qZzQ3f0XbFN0boYgEjOI"
-          />
-          <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-[rgba(184,239,207,0.8)] to-transparent p-6 md:p-16">
-            <h1 className="hero-title-shadow mb-3 max-w-2xl text-3xl font-semibold leading-tight text-[var(--on-surface)] md:text-5xl">
-              Authentic Village Flavors, Delivered.
-            </h1>
-            <p className="mb-6 max-w-lg text-base text-[var(--on-surface)]/90 md:text-lg">
-              Experience the true taste of heritage with organically grown, traditionally crafted food straight
-              from the hands of our farmers.
-            </p>
-            <button
-              type="button"
-              className="h-14 w-max rounded-full bg-[var(--primary)] px-8 text-sm font-semibold text-[var(--on-primary)] transition-colors hover:opacity-90"
-            >
-              Explore Harvest
-            </button>
-          </div>
+        <section className="relative mb-10 w-full overflow-hidden rounded-xl shadow-[0_4px_20px_rgba(24,77,54,0.04)] bg-[var(--surface-container-low)]">
+          <picture>
+            <source
+              media="(max-width: 767px)"
+              srcSet="/images/hero-mobile-img.png"
+            />
+            <source
+              media="(max-width: 1023px)"
+              srcSet="/images/hero-tablet-img.png"
+            />
+            <img
+              className="h-full w-full object-contain"
+              alt="Village farm and family food preparation"
+              src="/images/hero-laptop-img.png"
+            />
+          </picture>
         </section>
 
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-semibold text-[var(--on-surface)]">Categories</h2>
+          <h2 className="h2 mb-6 text-[var(--on-surface)]">Categories</h2>
           <div className="hide-scrollbar -mx-5 flex gap-3 overflow-x-auto px-5 pb-1 md:mx-0 md:px-0">
             {categories.map((category) => (
               <button
                 key={category.name}
                 type="button"
-                className="group flex min-w-[90px] flex-col items-center md:min-w-[110px]"
+                className="group flex min-w-[90px] flex-col items-center md:min-w-[110px] cursor-pointer"
               >
                 <div className="relative mb-1 h-16 w-16 overflow-hidden rounded-full bg-[var(--surface-container-high)] shadow-[0_4px_20px_rgba(24,77,54,0.04)] md:h-20 md:w-20">
                   <img
@@ -106,7 +101,7 @@ export default function Home() {
                     src={category.image}
                   />
                 </div>
-                <span className="text-xs font-semibold text-[var(--on-surface-variant)] md:text-sm">
+                <span className="body-sm text-[var(--on-surface-variant)]">
                   {category.name}
                 </span>
               </button>
@@ -116,13 +111,15 @@ export default function Home() {
 
         <section className="mb-16">
           <div className="mb-6 flex items-end justify-between">
-            <h2 className="text-2xl font-semibold text-[var(--on-surface)]">Trending Today</h2>
+            <h2 className="h2 text-[var(--on-surface)]">Trending Today</h2>
             <button
               type="button"
-              className="flex items-center gap-1 text-sm font-semibold text-[var(--primary)] transition-opacity hover:opacity-80"
+              className="button flex items-center gap-1 text-[var(--primary)] transition-opacity hover:opacity-80 cursor-pointer"
             >
               View All
-              <span className="material-symbols-outlined text-base">arrow_forward</span>
+              <span className="material-symbols-outlined text-base">
+                arrow_forward
+              </span>
             </button>
           </div>
 
@@ -147,23 +144,35 @@ export default function Home() {
 
                 <div className="flex flex-grow flex-col justify-between p-3">
                   <div>
-                    <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-[var(--on-surface)]">{product.name}</h3>
+                    <h3 className="product-title mb-1 line-clamp-2 text-[var(--on-surface)]">
+                      {product.name}
+                    </h3>
                     <div className="mb-3 flex items-center gap-1">
                       <div className="h-5 w-5 overflow-hidden rounded-full bg-[var(--surface-container-highest)]">
-                        <img className="h-full w-full object-cover" alt={product.seller} src={product.avatar} />
+                        <img
+                          className="h-full w-full object-cover"
+                          alt={product.seller}
+                          src={product.avatar}
+                        />
                       </div>
-                      <span className="text-xs text-[var(--on-surface-variant)]">{product.seller}</span>
+                      <span className="product-description text-[var(--on-surface-variant)]">
+                        {product.seller}
+                      </span>
                     </div>
                   </div>
 
                   <div className="mt-auto flex items-center justify-between border-t border-[var(--outline-variant)]/20 pt-3">
-                    <p className="text-xl font-semibold text-[var(--primary)]">
-                      {product.price}
-                      <span className="text-xs font-normal text-[var(--on-surface-variant)]">{product.unit}</span>
-                    </p>
+                    <div>
+                      <p className="product-price text-[var(--primary)]">
+                        {product.price}
+                      </p>
+                      <span className="caption text-[var(--on-surface-variant)]">
+                        {product.unit}
+                      </span>
+                    </div>
                     <button
                       type="button"
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--secondary-container)] text-[var(--on-secondary-container)] transition-colors hover:bg-[var(--secondary)] hover:text-[var(--on-secondary)]"
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--secondary-container)] text-[var(--on-secondary-container)] transition-colors hover:bg-[var(--secondary)] hover:text-[var(--on-secondary)] cursor-pointer"
                     >
                       <span className="material-symbols-outlined">add</span>
                     </button>
@@ -175,28 +184,43 @@ export default function Home() {
         </section>
       </main>
 
-      <nav className="pointer-events-none fixed bottom-0 left-0 z-50 flex w-full justify-center px-5 pb-6 pt-2 md:hidden">
-        <div className="pointer-events-auto flex w-[calc(100%-40px)] items-center justify-between rounded-full bg-[var(--surface)] px-2 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+      <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-[var(--outline-variant)]/20 bg-[var(--surface)] md:hidden">
+        <div className="flex w-full items-center justify-between">
           {[
             { icon: "home", label: "Home", active: true },
             { icon: "grid_view", label: "Categories", active: false },
             { icon: "receipt_long", label: "Orders", active: false },
             { icon: "favorite", label: "Wishlist", active: false },
-            { icon: "person", label: "Profile", active: false },
           ].map((item) => (
             <a
               key={item.label}
-              className={`flex min-w-[64px] flex-col items-center justify-center rounded-full px-2 py-2 transition-colors duration-200 ${
+              className={`flex flex-1 flex-col items-center justify-center px-2 py-3 transition-colors duration-200 cursor-pointer ${
                 item.active
                   ? "bg-[var(--secondary-container)] text-[var(--on-secondary-container)]"
                   : "text-[var(--on-surface-variant)] hover:bg-[var(--surface-container-low)]"
               }`}
               href="#"
             >
-              <span className={`material-symbols-outlined mb-1 ${item.active ? "fill-icon" : ""}`}>{item.icon}</span>
+              <span
+                className={`material-symbols-outlined mb-1 ${item.active ? "fill-icon" : ""}`}
+              >
+                {item.icon}
+              </span>
               <span className="text-[10px] font-semibold">{item.label}</span>
             </a>
           ))}
+          <button
+            type="button"
+            className="relative flex flex-1 flex-col items-center justify-center px-2 py-3 text-[var(--on-surface-variant)] transition-colors hover:bg-[var(--surface-container-low)] cursor-pointer"
+          >
+            <span className="material-symbols-outlined mb-1">
+              shopping_cart
+            </span>
+            <span className="text-[10px] font-semibold">Cart</span>
+            <span className="absolute right-1 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--secondary)] text-[10px] font-bold text-[var(--on-secondary)]">
+              2
+            </span>
+          </button>
         </div>
       </nav>
     </div>

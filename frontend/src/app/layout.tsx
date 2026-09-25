@@ -1,13 +1,22 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Inter } from "next/font/google";
+import { Playfair_Display, Manrope } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/components/providers/app-providers";
+import { Footer } from "@/components/footer";
 
-const inter = Inter({
-  variable: "--font-inter",
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const manrope = Manrope({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -37,7 +46,10 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${playfairDisplay.variable} ${manrope.variable} h-full antialiased`}
+    >
       <head>
         {/* eslint-disable-next-line @next/next/no-page-custom-font, @next/next/google-font-display */}
         <link
@@ -45,8 +57,9 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block"
         />
       </head>
-      <body className="min-h-full">
+      <body className="min-h-full flex flex-col">
         <AppProviders>{children}</AppProviders>
+        <Footer />
       </body>
     </html>
   );
